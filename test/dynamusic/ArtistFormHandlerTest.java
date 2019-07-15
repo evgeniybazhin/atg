@@ -8,7 +8,9 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertFalse;
 
-
+/**
+ * Class for testing ArtistFormHandler
+ */
 public class ArtistFormHandlerTest {
 
     private ArtistFormHandler artistFormHandler;
@@ -29,4 +31,5 @@ public class ArtistFormHandlerTest {
         artistFormHandler.preDeleteItem(requestMock, responseMock);
         assertFalse(artistFormHandler.getFormExceptions().isEmpty());
     }
+
 }
