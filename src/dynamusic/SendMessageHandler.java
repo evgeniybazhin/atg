@@ -39,6 +39,13 @@ public class SendMessageHandler extends GenericFormHandler implements Serializab
    String mSubject;
    String mSuccessURL;
    String mErrorURL;
+   private static final String SEND_MESSAGE_HANDLER_CALLED_FROM = "send message handler called with from= ";
+   private static final String NO_EMAIL_SENDER_SET = "no email sender set";
+   private static final String ERROR_RETRIEVING_USER_EMAIL_ADDRESS = "error retrieving user's email address";
+   private static final String USER_HAS_NOT_SUPPLIED_AN_EMAIL_ADDRESS = "User has not supplied an email address";
+   private static final String INVALID_USER_ID = "invalid user id";
+   private static final String SUBJECT_AND_MESSAGE_BOTH_NULL = "subject and message both null";
+   private static final String SUBJECT_AND_MESSAGE_CANT_BOTH = "Subject and message can't both be empty";
    
    
    public String getToUserid() { return mToUserid; }
@@ -71,20 +78,20 @@ public class SendMessageHandler extends GenericFormHandler implements Serializab
                               throws java.io.IOException, javax.servlet.ServletException {
                               
        if (isLoggingDebug()) 
-           logDebug("send message handler called with from=" + getFromUserid() + ", to=" + getToUserid());
+           logDebug( SEND_MESSAGE_HANDLER_CALLED_FROM + getFromUserid() + ", to=" + getToUserid());
            
        RepositoryItem touser=null;
        EmailSender es = getEmailSender();
        
        if (es == null) 
-           throw new DropletException("no email sender set");
+           throw new DropletException(NO_EMAIL_SENDER_SET);
        else {       
             try {
                 touser = getUserRepository().getItem(getToUserid(),"user");
             }
             catch (RepositoryException e) {
-                if (isLoggingError()) logError("error retrieving user's email address",e);
-                addFormException(new DropletException("User has not supplied an email address"));
+                if (isLoggingError()) logError(ERROR_RETRIEVING_USER_EMAIL_ADDRESS,e);
+                addFormException(new DropletException(USER_HAS_NOT_SUPPLIED_AN_EMAIL_ADDRESS));
  	        if (getErrorURL() != null) {
  	              pResponse.sendLocalRedirect(getErrorURL(), pRequest);
 	              return false;
@@ -92,21 +99,21 @@ public class SendMessageHandler extends GenericFormHandler implements Serializab
             }       
             
             if (touser == null) {
-               throw new DropletException("invalid user id");
+               throw new DropletException(INVALID_USER_ID);
             }
-               
-     
+
+
             String toEmailAddr = (String)touser.getPropertyValue("email");
             String fromEmailAddr = "user" + getFromUserid() + "@dynamusic.com";
      
             String subject = getSubject();
             String message = getMessage();
-     
-     
+
+
             if (subject.equals("") && message.equals("")) {
-                if (isLoggingDebug()) 
-                    logDebug("subject and message both null");
-                addFormException(new DropletException("Subject and message can't both be empty"));
+                if (isLoggingDebug())
+                    logDebug(SUBJECT_AND_MESSAGE_BOTH_NULL);
+                addFormException(new DropletException(SUBJECT_AND_MESSAGE_CANT_BOTH));
       	        if (getErrorURL() != null) {
  	              pResponse.sendLocalRedirect(getErrorURL(), pRequest);
 	              return false;
@@ -135,8 +142,6 @@ public class SendMessageHandler extends GenericFormHandler implements Serializab
        	     pResponse.sendLocalRedirect(getSuccessURL(), pRequest);
 	     return false;
 	 }
-
-         return true;                  
-
+         return true;
    }
 }

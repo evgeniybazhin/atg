@@ -133,13 +133,6 @@ public class SongsManager extends atg.nucleus.GenericService {
     return mSongMessageSource;
   }
 
-  // ----------------------------------------
-  // [3] METHODS
-  
-  /* Given a user from the user repository, return an associated artist.
-   * First checks if an existing artist already
-   * exists for that user; if not, creates one.
-   */
   public String createArtistFromUser(String pUserid) throws RepositoryException {
    
       if (isLoggingDebug()) 
@@ -153,16 +146,14 @@ public class SongsManager extends atg.nucleus.GenericService {
       String description = (String)user.getPropertyValue("info");
       Boolean shareProfile = (Boolean)user.getPropertyValue("shareProfile");
       RepositoryItem artistItem = null;
-      
-      /* First, check if an artist has already been created for this user */
+
       RqlStatement finduserRQL = RqlStatement.parseRqlStatement("name = ?0");
       RepositoryView artistView = mutRepos.getView("artist");
       Object rqlparams[] = new Object[1];
       rqlparams[0] = username;
       RepositoryItem [] artistList = 
             finduserRQL.executeQuery (artistView, rqlparams);
-      
-      
+
       if (artistList != null) {
            if (isLoggingDebug()) logDebug("artists found for this user:" + artistList.length + " (using artist: " + artistList[0] + ")");
            artistItem = artistList[0];
@@ -171,7 +162,6 @@ public class SongsManager extends atg.nucleus.GenericService {
         try {
          MutableRepositoryItem mutArtistItem = mutRepos.createItem("artist");
          mutArtistItem.setPropertyValue("name", username);
-         /* TBD test shareProfile if (shareProfile) */
             mutArtistItem.setPropertyValue("description",description);
          mutRepos.addItem(mutArtistItem);
          artistItem = mutArtistItem;
@@ -189,9 +179,6 @@ public class SongsManager extends atg.nucleus.GenericService {
       return artistItem.getRepositoryId();        
   }
 
-  /* Given a song ID and an artist ID, set the 'artist' property of the song
-   * to the artist
-   */  
   public void addArtistToSong(String pSongid, String pArtistid) throws RepositoryException {
       if (isLoggingDebug()) 
           logDebug("adding song " + pSongid + " to artist " + pArtistid);
@@ -216,8 +203,6 @@ public class SongsManager extends atg.nucleus.GenericService {
       
  }      
 
-  /* Given a song ID and an album ID, add song to the songList property of the album
-   */  
   public void addSongToAlbum(String pSongid, String pAlbumid) throws RepositoryException {
       if (isLoggingDebug()) 
           logDebug("adding song " + pSongid + " to album " + pAlbumid);
@@ -242,13 +227,8 @@ public class SongsManager extends atg.nucleus.GenericService {
       }
       
  }      
-   
-   
-  /**
-   * Delete all the albums by the artist specified
-   */
+
    public void deleteAlbumsByArtist(String pArtistId) throws RepositoryException {
-   
 
       if (isLoggingDebug()) 
            logDebug("deleting albums by artist id " + pArtistId);
@@ -259,15 +239,13 @@ public class SongsManager extends atg.nucleus.GenericService {
           TransactionDemarcation td = new TransactionDemarcation();
           td.begin(getTransactionManager(), td.REQUIRED);
           try {
-             /* First, find all the albums by this artist */
              RqlStatement findalbumsRQL = RqlStatement.parseRqlStatement("artist.id = ?0");
              RepositoryView albumView = mutRepos.getView("album");
              Object rqlparams[] = new Object[1];
              rqlparams[0] = pArtistId;
              RepositoryItem [] albumList = 
                 findalbumsRQL.executeQuery (albumView, rqlparams);
-                
-             /* loop through the list, and delete the albums */
+
              if (isLoggingDebug())
                  logDebug("found albums for artist: " + albumList);
              if (albumList != null) {
@@ -275,15 +253,9 @@ public class SongsManager extends atg.nucleus.GenericService {
                      if (isLoggingDebug()) 
                          logDebug("deleting album " + albumList[i]);
                     mutRepos.removeItem(albumList[i].getRepositoryId(), "album");
-                 } /* for loop on albumList */
-                 
-                 /*------ uncomment this code to test transactions/rollback ----*/
-                 /* throw new Exception("just a test, comment this out"); */
-                 
-             } /* if albumList != null */
-          } /* try block */     
-          
-          catch (Exception e) {
+                 }
+             }
+          }catch (Exception e) {
              if (isLoggingError())
                  logError("Exception occured trying to remove albums", e); 
              try {
@@ -293,9 +265,7 @@ public class SongsManager extends atg.nucleus.GenericService {
                  if (isLoggingError())
                      logError("Unable to set rollback for transaction", se);
              }
-          }
-          
-          finally {
+          }finally {
               td.end();
           } 
       }
@@ -330,9 +300,6 @@ public class SongsManager extends atg.nucleus.GenericService {
             logDebug("No SongMessageSource set, no message sent");
       }
   }
-  
-  /**
-   * Constructor -- doesn't do much for now...
-   */
+
   public SongsManager() {}
 }

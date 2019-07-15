@@ -35,7 +35,8 @@ public class FindAge extends atg.repository.RepositoryPropertyDescriptor {
   String mAgeFormat = "years"; /** possible values: years or days */
   
   /* Attribute name constants */
-  public  static final String AGE_FORMAT_ATTR_NAME = "ageFormat";
+  public static final String AGE_FORMAT_ATTR_NAME = "ageFormat";
+  private static final String CALLING_GET_PROPETRY_VALUE = "Calling getPropertyValue ";
   
 	
  /*	This code would register this property descriptor so that
@@ -58,13 +59,11 @@ public class FindAge extends atg.repository.RepositoryPropertyDescriptor {
    **/
 
     public Object getPropertyValue (RepositoryItemImpl pItem, Object pValue) {
-        System.out.println("Calling getPropertyValue " + pItem);
+        System.out.println(CALLING_GET_PROPETRY_VALUE + pItem);
 
         Date dob = (Date) pItem.getPropertyValue("dateOfBirth");
                 
         if (dob != null) {
-            /* possible values for the ageFormat attributes
-               are years and days, years is the default */
             if (mAgeFormat.equalsIgnoreCase("days"))  {
                 return new Integer(AgeCalc.ageInDays(dob));
 	    }

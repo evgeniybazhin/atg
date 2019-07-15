@@ -23,6 +23,7 @@ import javax.jms.ObjectMessage;
 
 import atg.dms.patchbay.MessageSource;
 import atg.dms.patchbay.MessageSourceContext;
+import com.sun.xml.xsom.impl.FacetImpl;
 
 /**
 
@@ -36,7 +37,9 @@ component).
 public class SongMessageSource extends atg.nucleus.GenericService implements MessageSource 
 {
     private MessageSourceContext mContext;
-    private boolean mStarted = false;	
+    private boolean mStarted = false;
+    private static final String SONG_MESSAGE_SOURCE_SENDING_MESSAGE = "SongMessageSource...sending message: ";
+    private static final String FIRE_MESSAGE_CALLED_BUT_MESSAGE_SOURCE_NOT_YET_STARTED = "fire message called but message source not yet started";
     
     // These methods implement the MessageSource interface
     public void setMessageSourceContext (MessageSourceContext pContext)
@@ -59,12 +62,12 @@ public class SongMessageSource extends atg.nucleus.GenericService implements Mes
            nsm.setTitle(pTitle);
            msg.setObject(nsm);
     	   if (isLoggingDebug()) 
-    	       logDebug("SongMessageSource...sending message: " + msg);           
+    	       logDebug(SONG_MESSAGE_SOURCE_SENDING_MESSAGE + msg);
            mContext.sendMessage (msg);
         }
         else {
            if (isLoggingDebug())
-               logDebug("fire message called but message source not yet started");
+               logDebug(FIRE_MESSAGE_CALLED_BUT_MESSAGE_SOURCE_NOT_YET_STARTED);
         }
     }    	
 }

@@ -32,6 +32,8 @@ public class SongFormHandler extends RepositoryFormHandler {
     private SongsManager mSM;
     private String mAlbumId;
     private String mArtistId;
+    private static final String POST_CREATE_ITEM_CALLED = "postCreateItem called, item created: ";
+    private static final String CANNOT_ADD_SONG_TO_ALBUM = "Cannot add song to album";
     
     // Property methods
     
@@ -66,8 +68,7 @@ public class SongFormHandler extends RepositoryFormHandler {
                               java.io.IOException {
      
        	if (isLoggingDebug())
-  		logDebug("postCreateItem called, item created: " + getRepositoryItem());
-  	        
+  		logDebug(POST_CREATE_ITEM_CALLED + getRepositoryItem());
 
         SongsManager sm = getSongsManager();
     
@@ -78,8 +79,8 @@ public class SongFormHandler extends RepositoryFormHandler {
         }
         catch (RepositoryException e) {
            if (isLoggingError())
-                   logError("Cannot add song to album", e);
-                addFormException(new DropletException("Cannot add song to album"));
+                   logError(CANNOT_ADD_SONG_TO_ALBUM, e);
+                addFormException(new DropletException(CANNOT_ADD_SONG_TO_ALBUM));
 
         }
    } 

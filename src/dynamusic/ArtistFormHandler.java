@@ -10,8 +10,11 @@ import atg.servlet.*;
 
 public class ArtistFormHandler extends RepositoryFormHandler {
 
+    private static final String PRE_DELETE_CALLED = "preDeleteItem called, item: ";
+    private static final String CANNOT_DELETE_ALBUMS_BY_ARTIST = "Cannot delete albums by artist";
+    private static final String NO_SONG_MANAGER_SET = "no songs manager set";
     SongsManager mSM;
-    
+
     public SongsManager getSongsManager() {
         return mSM;
     }
@@ -27,7 +30,7 @@ public class ArtistFormHandler extends RepositoryFormHandler {
                               java.io.IOException {
      
        	if (isLoggingDebug())
-  		logDebug("preDeleteItem called, item: " + getRepositoryItem());
+  		logDebug(PRE_DELETE_CALLED + getRepositoryItem());
   	        
         SongsManager sm = getSongsManager();
         String artistid = getRepositoryItem().getRepositoryId();
@@ -38,13 +41,13 @@ public class ArtistFormHandler extends RepositoryFormHandler {
              }
              catch (RepositoryException re) {
                 if (isLoggingError())
-                   logError("Cannot delete albums by artist", re);
-                addFormException(new DropletException("Cannot delete albums by artist"));
+                   logError(CANNOT_DELETE_ALBUMS_BY_ARTIST, re);
+                addFormException(new DropletException(CANNOT_DELETE_ALBUMS_BY_ARTIST));
              }
         }
         else {
            if (isLoggingWarning())
-                logWarning("no songs manager set");
+                logWarning(NO_SONG_MANAGER_SET);
         } 	  	
     }
     
