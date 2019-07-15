@@ -1,0 +1,101 @@
+<!-- This file provides a starting point for extending the 
+     profile repository.
+
+     The comments below coincide with the instructions in the
+     lab.
+ -->
+     
+<gsa-template>
+ <item-descriptor name="playlist" display-property="name">
+    <table name="dynamusic_playlist" type="primary"
+         id-column-name="id">
+        <property name="id" data-type="string" column-name="id"/>
+    	<property name="name" data-type="string"
+              column-name="name" />
+        <property name="publish" data-type="boolean" 
+              column-name="publish" />
+    	<property name="description" data-type="string"
+              column-name="description" />
+     </table>
+     <table name="dynamusic_playlist_song" id-column-name="pl_id" type="multi">
+        <property name="songs"                           
+           data-type="set"
+           component-item-type="song"
+           column-name="song_id" 
+           repository="/dynamusic/SongsRepository"/>
+     </table>
+ </item-descriptor>
+
+ <item-descriptor name="user" >
+
+    <table name="dynamusic_user" type="auxiliary"
+         id-column-name="user_id">
+    	<property name="info" data-type="string"
+              column-name="info" category="dynamusic" />
+        <property name="shareProfile" data-type="boolean" 
+              column-name="share_profile" category="dynamusic" />
+        <property name="subscriber" data-type="boolean" 
+              column-name="subscriber" category="dynamusic" default="false"/>
+        <property name="initialDownloadNumber" data-type="int"
+              column-name="initial_download_number" category="dynamusic" />
+        <property name="myDownloadNumber" data-type="int"
+              column-name="my_download_number" category="dynamusic" />
+    </table>
+
+    <table name="dynamusic_prefgenres" type="multi"
+           id-column-name="id">
+        <property name="prefGenres"                           
+           category="dynamusic" data-type="set"
+              component-data-type="string"
+              column-name="genre"/>
+    </table>
+
+    <table name="dynamusic_viewedartists" type="multi"
+           id-column-name="user_id">
+        <property name="viewedArtists"                           
+           category="dynamusic" data-type="set"
+           component-item-type="artist"
+           column-name="artist_id"
+           repository="/dynamusic/SongsRepository"/>
+    </table>
+
+    <table name="dynamusic_user_playlists" type="multi"
+           id-column-name="user_id">
+        <property name="playlists"
+           category="dynamusic" data-type="set"
+           component-item-type="playlist"
+           column-name="pl_id"/>
+    </table>
+
+    <table name="dynamusic_viewedsongs" type="multi"
+           id-column-name="user_id">
+        <property name="viewedSongs"                           
+           category="dynamusic" data-type="set"
+           component-item-type="song"
+           column-name="song_id"
+           repository="/dynamusic/SongsRepository"/>
+    </table>
+
+    <!-- this table sets up the properties necessary for the 
+         Dev 2 Chapter 7 exercise -->
+    <table name="dynamusic_newsongs_playlist" type="auxiliary"
+         id-column-name="user_id">
+    	<property name="newSongsPlaylist" item-type="playlist"
+              column-name="newsongs_playlist" category="dynamusic"
+              cascade="insert,delete,update" />
+    	<property name="newSongsAutoUpdate" data-type="boolean"
+              column-name="newsongs_auto_update" category="dynamusic" 
+              default="false" />
+    </table>
+
+     <property name="ageInYears" property-type="dynamusic.FindAge" data-type="int" default="0" category="dynamusic" queryable="false">
+        <attribute name="ageFormat" value="years"/>
+     </property>
+
+     <property name="ageInDays" property-type="dynamusic.FindAge" data-type="int" default="0" category="dynamusic" queryable="false">
+         <attribute name="ageFormat" value="days"/>
+     </property>
+    
+ </item-descriptor>
+
+</gsa-template>
