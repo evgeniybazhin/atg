@@ -41,28 +41,24 @@ public class AgeCalc {
 	double secondsInDay = 24*60*60;
 	long ageAsSeconds = ageInSeconds(pDate);
   	long ageAsDays = (long) (ageAsSeconds/secondsInDay);  
-  	return (int) ageAsDays;		
-
+  	return (int) ageAsDays;
    }
    
    /** given a date, return the number of years since that date 
     **/
    public static int ageInYears(Date pDate) {
-   
 	double secondsInYear = 365.25*24*60*60;
 	long ageAsSeconds = ageInSeconds(pDate);
   	long ageAsYears = (long) (ageAsSeconds/secondsInYear);
 	return (int) ageAsYears;
-
    }
 
    /** given a date, return the number of seconds since that date 
     **/
    public static long ageInSeconds(Date pDate) {
   	Date now = new Date();
-     	long ageAsTime = now.getTime() - pDate.getTime();
+  	long ageAsTime = now.getTime() - pDate.getTime();
   	long ageAsSeconds = ageAsTime/1000;
   	return ageAsSeconds;
    }
-
 }

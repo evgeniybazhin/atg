@@ -102,13 +102,11 @@ public class SendMessageHandler extends GenericFormHandler implements Serializab
                throw new DropletException(INVALID_USER_ID);
             }
 
-
             String toEmailAddr = (String)touser.getPropertyValue("email");
             String fromEmailAddr = "user" + getFromUserid() + "@dynamusic.com";
      
             String subject = getSubject();
             String message = getMessage();
-
 
             if (subject.equals("") && message.equals("")) {
                 if (isLoggingDebug())
@@ -136,7 +134,7 @@ public class SendMessageHandler extends GenericFormHandler implements Serializab
 	              return false;
 	         }
               throw new DropletException ("Email to " + toEmailAddr + " failed",e);
-            }   
+            }
          }
          if (getSuccessURL() != null) {
        	     pResponse.sendLocalRedirect(getSuccessURL(), pRequest);

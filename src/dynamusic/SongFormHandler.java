@@ -73,15 +73,17 @@ public class SongFormHandler extends RepositoryFormHandler {
         SongsManager sm = getSongsManager();
     
         try {
-           sm.addSongToAlbum(getRepositoryId(),getAlbumId());
-           sm.addArtistToSong(getRepositoryId(),getArtistId());
-           sm.fireNewSongMessage(getRepositoryItem());
+            if(sm != null){
+                sm.addSongToAlbum(getRepositoryId(),getAlbumId());
+                sm.addArtistToSong(getRepositoryId(),getArtistId());
+                sm.fireNewSongMessage(getRepositoryItem());
+            }
         }
         catch (RepositoryException e) {
-           if (isLoggingError())
-                   logError(CANNOT_ADD_SONG_TO_ALBUM, e);
-                addFormException(new DropletException(CANNOT_ADD_SONG_TO_ALBUM));
-
+           if (isLoggingError()){
+               logError(CANNOT_ADD_SONG_TO_ALBUM, e);
+           }
+            addFormException(new DropletException(CANNOT_ADD_SONG_TO_ALBUM));
         }
    } 
 }

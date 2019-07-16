@@ -31,6 +31,11 @@ import java.io.Serializable;
 
 public class UploadSongHandler extends RepositoryFormHandler implements Serializable {
 
+    private static final String POST_CREATE_ITEM_CALLED = "postCreateItem called, item created: ";
+    private static final String NO_SONGS_MANAGER_SET = "no songs manager set";
+    private static final String CANNOT_ADD_SONG_TO_ARTIST = "Cannot add song to artist";
+    private static final String UNABLE_TO_ADD_ARTIST_FOR_SONG = "unable to add artist for song";
+    private static final String ADDING_SONG_FAILED_BUT_ROLLBACK = "Adding song failed, but rollback failed too";
     SongsManager mSM;
     String mUserid;
         
@@ -47,7 +52,7 @@ public class UploadSongHandler extends RepositoryFormHandler implements Serializ
                               java.io.IOException {
      
        	if (isLoggingDebug())
-  		logDebug("postCreateItem called, item created: " + getRepositoryItem());
+  		logDebug(POST_CREATE_ITEM_CALLED + getRepositoryItem());
   	        
 
         SongsManager sm = getSongsManager();
@@ -56,27 +61,30 @@ public class UploadSongHandler extends RepositoryFormHandler implements Serializ
         String songid = getRepositoryItem().getRepositoryId();
    
         if (sm != null) {
-             try {
-                artistid = sm.createArtistFromUser(userid);                
-                sm.addArtistToSong(songid,artistid);
-             }
-             catch (RepositoryException re) {
-                if (isLoggingError())
-                   logError("Cannot add song to artist", re);
-                addFormException(new DropletException("unable to add artist for song"));
-                try {
-                   sm.getTransactionManager().setRollbackOnly();
-                }
-                catch(Exception e) {
-                    if (isLoggingError())
-                       logError("Adding song failed but rollback failed too", e);
-                }
-             }
+             addSongToArtist(artistid, userid, songid, sm);
         }
         else {
            if (isLoggingWarning())
-                logWarning("no songs manager set");
+                logWarning(NO_SONGS_MANAGER_SET);
         }
-  	  	
+    }
+
+    private void addSongToArtist(String artistid, String userid, String songid, SongsManager sm){
+        try {
+            artistid = sm.createArtistFromUser(userid);
+            sm.addArtistToSong(songid,artistid);
+        }
+        catch (RepositoryException re) {
+            if (isLoggingError())
+                logError(CANNOT_ADD_SONG_TO_ARTIST, re);
+            addFormException(new DropletException(UNABLE_TO_ADD_ARTIST_FOR_SONG));
+            try {
+                sm.getTransactionManager().setRollbackOnly();
+            }
+            catch(Exception e) {
+                if (isLoggingError())
+                    logError(ADDING_SONG_FAILED_BUT_ROLLBACK, e);
+            }
+        }
     }
 }

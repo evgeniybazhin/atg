@@ -159,24 +159,31 @@ public class SongsManager extends atg.nucleus.GenericService {
            artistItem = artistList[0];
       }      
       else {
-        try {
-         MutableRepositoryItem mutArtistItem = mutRepos.createItem("artist");
-         mutArtistItem.setPropertyValue("name", username);
-            mutArtistItem.setPropertyValue("description",description);
-         mutRepos.addItem(mutArtistItem);
-         artistItem = mutArtistItem;
-         if (isLoggingDebug()) 
-             logDebug("no artists found for this user, new artist " + mutArtistItem + " created.");
-
-        }
-        catch (RepositoryException e) {
-         if (isLoggingError()) {
-            logError(e);
-         }
-         throw e;
-        }
+        addArtistItem(mutRepos, username, description, artistItem);
       }
       return artistItem.getRepositoryId();        
+  }
+
+  private void addArtistItem(MutableRepository mutRepos,
+                             String username,
+                             String description,
+                             RepositoryItem artistItem) throws RepositoryException {
+      try {
+          MutableRepositoryItem mutArtistItem = mutRepos.createItem("artist");
+          mutArtistItem.setPropertyValue("name", username);
+          mutArtistItem.setPropertyValue("description",description);
+          mutRepos.addItem(mutArtistItem);
+          artistItem = mutArtistItem;
+          if (isLoggingDebug())
+              logDebug("no artists found for this user, new artist " + mutArtistItem + " created.");
+
+      }
+      catch (RepositoryException e) {
+          if (isLoggingError()) {
+              logError(e);
+          }
+          throw e;
+      }
   }
 
   public void addArtistToSong(String pSongid, String pArtistid) throws RepositoryException {
