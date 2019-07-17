@@ -18,6 +18,7 @@
 
 package dynamusic;
 
+import atg.core.util.Null;
 import atg.droplet.DropletException;
 
 import atg.repository.RepositoryException;
@@ -77,9 +78,8 @@ public class SongFormHandler extends RepositoryFormHandler {
                 sm.addSongToAlbum(getRepositoryId(),getAlbumId());
                 sm.addArtistToSong(getRepositoryId(),getArtistId());
                 sm.fireNewSongMessage(getRepositoryItem());
-            }
-        }
-        catch (RepositoryException e) {
+            }else addFormException(new DropletException(CANNOT_ADD_SONG_TO_ALBUM));
+        }catch (RepositoryException e) {
            if (isLoggingError()){
                logError(CANNOT_ADD_SONG_TO_ALBUM, e);
            }
